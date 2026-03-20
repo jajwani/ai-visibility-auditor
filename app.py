@@ -2,6 +2,7 @@ import streamlit as st
 import anthropic
 import json
 import re
+import pandas as pd
 
 # Secure API key from Streamlit Secrets
 @st.cache_resource
