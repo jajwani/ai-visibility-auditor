@@ -1,59 +1,78 @@
 import streamlit as st
 import anthropic
 import json
+import re
 
-# Load API key securely
-try:
-    API_KEY = st.secrets["ANTHROPIC_API_KEY"]
-    client = anthropic.Anthropic(api_key=API_KEY)
-except:
-    st.error("❌ Add ANTHROPIC_API_KEY to Streamlit Secrets")
-    st.stop()
+# Secure API key from Streamlit Secrets
+@st.cache_resource
+def get_client():
+    try:
+        API_KEY = st.secrets["ANTHROPIC_API_KEY"]
+        return anthropic.Anthropic(api_key=API_KEY)
+    except:
+        st.error("❌ Add ANTHROPIC_API_KEY to Streamlit Cloud Secrets")
+        st.stop()
+
+client = get_client()
 
 st.title("🤖 AI Visibility Auditor")
-st.markdown("Tests if brands appear in Claude's answers to realistic industry queries")
+st.markdown("**Tests brand visibility in Claude's natural responses to generic industry queries**")
 
-# Your benchmark results
-st.sidebar.header("Benchmark Results")
+# Your benchmark results (sidebar)
+st.sidebar.header("Your GEO Benchmark")
 st.sidebar.markdown("""
 | Brand                | Visibility |
 |----------------------|------------|
-| **Profound**         | **100%** ⭐ |
-| Adobe LLM Optimizer  | **0%**     |
-| Brandlight           | **0%**     |
+| **Profound**         | **100%** (6/6) ⭐ |
+| Adobe LLM Optimizer  | **0%** (0/6)    |
+| Brandlight           | **0%** (0/6)    |
 """)
+st.sidebar.markdown("[GitHub](https://github.com/yourusername/ai-visibility-auditor)")
 
-# Inputs
-col1, col2 = st.columns(2)
-brand = col1.text_input("Brand name")
-industry = col2.text_input("Industry", value="LLM visibility / GEO")
-n_queries = st.slider("Queries", 3, 12, 6)
+# Inputs (clean layout)
+col1, col2 = st.columns([2,1])
+brand = col1.text_input("Brand name", placeholder="MGM Sun, Profound, etc.")
+industry = col1.text_input("Industry", value="casino", placeholder="casino, GEO, analytics")
+n_queries = col2.number_input("Queries", 3, 12, 6, help="More = better accuracy")
 
-if st.button("🚀 Run Audit", type="primary") and brand:
-    with st.spinner("Claude generating queries → answering → analyzing..."):
-        # Step 1: Generate queries
+if st.button("🚀 Run Audit", type="primary") and brand.strip():
+    with st.spinner(f"Auditing {brand} across {n_queries} generic {industry} queries..."):
+        
+        # STEP 1: Generate GENERIC queries (NO BRAND BIAS)
         gen_prompt = f"""
-        Generate exactly {n_queries} realistic questions about {industry} 
-        where a brand like "{brand}" might appear. 
-        Return ONLY JSON array of strings.
+        Generate exactly {n_queries} realistic, generic questions people ask about {industry}.
+        
+        Examples for "casino":
+        - "best casinos in Las Vegas?"
+        - "top casino loyalty programs?"
+        - "casino tournaments worth attending?"
+        
+        Return ONLY valid JSON array of strings. Generic questions only—no brand names.
         """
         
         queries_raw = client.messages.create(
             model="claude-opus-4-6",
-            max_tokens=500,
+            max_tokens=600,
             messages=[{"role": "user", "content": gen_prompt}]
         ).content[0].text
         
-        # Extract JSON
-        start = queries_raw.find('[')
-        end = queries_raw.rfind(']') + 1
-        queries = json.loads(queries_raw[start:end])
+        # Parse JSON safely
+        try:
+            start = queries_raw.find('[')
+            end = queries_raw.rfind(']') + 1
+            queries = json.loads(queries_raw[start:end])
+        except:
+            st.error("Failed to parse queries. Try again.")
+            st.stop()
         
-        # Step 2: Audit each query
+        st.info(f"✅ Generated {len(queries)} generic queries")
+        
+        # STEP 2: Audit each query naturally
         results = []
-        for i, query in enumerate(queries, 1):
-            st.status(f"Query {i}/{len(queries)}: {query[:60]}...")
-            
+        progress = st.progress(0)
+        
+        for i, query in enumerate(queries):
+            # Ask Claude naturally (no brand priming)
             resp = client.messages.create(
                 model="claude-opus-4-6",
                 max_tokens=400,
@@ -61,29 +80,58 @@ if st.button("🚀 Run Audit", type="primary") and brand:
             )
             
             answer = resp.content[0].text.lower()
-            mentioned = brand.lower() in answer
+            
+            # Check for brand mentions (case-insensitive, multiple variants)
+            brand_lower = brand.lower()
+            variants = [brand_lower, brand_lower.replace(" ", ""), brand_lower.replace("-", "")]
+            mentioned = any(variant in answer for variant in variants)
+            
+            # Context snippet (if mentioned)
+            context = ""
+            if mentioned:
+                idx = answer.find(brand_lower)
+                start = max(0, idx - 80)
+                end = min(len(answer), idx + len(brand) + 100)
+                context = answer[start:end].replace('\n', ' ')
             
             results.append({
                 "query": query,
                 "mentioned": mentioned,
-                "preview": answer[:150] + "..." if not mentioned else answer
+                "answer_preview": answer[:120] + "..." if not mentioned else context
             })
+            
+            progress.progress((i+1) / len(queries))
         
-        # Step 3: Results
+        # STEP 3: Results
         hits = sum(1 for r in results if r["mentioned"])
-        pct = round(hits / len(results) * 100)
+        pct = round((hits / len(results)) * 100)
         
-        st.success(f"**Visibility: {pct}% ({hits}/{len(results)})**")
+        st.success(f"**{brand}: {pct}% visibility ({hits}/{len(results)})**")
+        st.metric("Mentions", f"{hits}/{len(results)}", f"{pct}%")
         
-        st.subheader("Detailed Results")
-        for r in results:
-            icon = "✅" if r["mentioned"] else "❌"
-            with st.expander(f"{icon} {r['query'][:80]}..."):
-                st.write(f"**Mentioned:** {'Yes' if r['mentioned'] else 'No'}")
-                st.write("**Preview:**", r["preview"])
+        # Results table
+        df = pd.DataFrame(results)
+        st.subheader("Query Results")
+        for idx, row in df.iterrows():
+            icon = "✅" if row["mentioned"] else "❌"
+            with st.expander(f"{icon} {row['query'][:70]}..."):
+                st.markdown(f"**Answer:** {row['answer_preview']}")
+                st.caption(f"Brand mentioned: {'Yes' if row['mentioned'] else 'No'}")
         
-        # Download JSON
-        data = {"brand": brand, "industry": industry, "results": results}
-        st.download_button("💾 Download JSON", 
-                          json.dumps(data, indent=2), 
-                          f"audit_{brand.lower().replace(' ','_')}.json")
+        # Download
+        data = {
+            "brand": brand,
+            "industry": industry,
+            "queries": n_queries,
+            "timestamp": datetime.now().isoformat(),
+            "results": results,
+            "visibility_pct": pct
+        }
+        st.download_button(
+            "💾 Download JSON Report",
+            json.dumps(data, indent=2),
+            f"audit_{brand.lower().replace(' ','_')}_{datetime.now().strftime('%Y%m%d')}.json",
+            "application/json"
+        )
+
+st.caption("Pure methodology: generic queries → natural Claude answers → brand mention detection")
