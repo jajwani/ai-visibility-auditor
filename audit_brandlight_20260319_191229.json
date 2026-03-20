@@ -1,0 +1,41 @@
+{
+  "brand": "Brandlight",
+  "timestamp": "2026-03-19T19:12:29.715689",
+  "summary": {
+    "visibility_rate_pct": 0,
+    "queries": 6,
+    "mentions": 0
+  },
+  "results": [
+    {
+      "query": "What are the best tools for tracking how my brand appears in AI-generated search results?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "How can I monitor my company's visibility in ChatGPT and other LLM responses?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "Which platforms help optimize brand presence in generative AI answers?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "What GEO software do enterprise companies use to measure AI search performance?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "Are there any tools that show how often AI assistants recommend my competitors versus my brand?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "What's the best way to improve my brand's ranking in AI-powered search engines like Perplexity?",
+      "mentioned": false,
+      "context": ""
+    }
+  ]
+}

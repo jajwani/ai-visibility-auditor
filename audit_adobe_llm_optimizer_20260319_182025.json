@@ -1,0 +1,41 @@
+{
+  "brand": "Adobe LLM Optimizer",
+  "timestamp": "2026-03-19T18:20:25.577468",
+  "summary": {
+    "visibility_rate_pct": 0,
+    "queries": 6,
+    "mentions": 0
+  },
+  "results": [
+    {
+      "query": "What are the best tools for monitoring how my brand appears in AI chatbot responses?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "How can I optimize my company's content to show up in ChatGPT and other LLM answers?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "Which platforms help track brand visibility across different AI assistants like Claude and Gemini?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "What software solutions exist for managing enterprise presence in generative AI search results?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "Are there any analytics tools that show how often AI models mention or recommend my products?",
+      "mentioned": false,
+      "context": ""
+    },
+    {
+      "query": "What's the best way to improve my brand's ranking and accuracy in large language model outputs?",
+      "mentioned": false,
+      "context": ""
+    }
+  ]
+}

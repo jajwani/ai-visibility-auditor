@@ -1,0 +1,41 @@
+{
+  "brand": "Profound",
+  "timestamp": "2026-03-19T18:59:29.863376",
+  "summary": {
+    "visibility_rate_pct": 100,
+    "queries": 6,
+    "mentions": 6
+  },
+  "results": [
+    {
+      "query": "What are the best tools for tracking how my brand appears in AI-generated answers like ChatGPT and Perplexity?",
+      "mentioned": true,
+      "context": "\u2026still maturing. Here's what's currently available:\n\n## Purpose-Built AI Brand Monitoring Tools\n\n- **Profound** - Specifically tracks brand mentions across LLMs (ChatGPT, Claude, Perplexity, etc.)\n- **Scrunch AI** - Monitors how brands appear in AI-generated \u2026"
+    },
+    {
+      "query": "How can I monitor and improve my company's visibility in large language model responses?",
+      "mentioned": true,
+      "context": "\u2026tegory],\" \"alternatives to [competitor],\" \"[problem] solutions\"\n\n**Emerging Tools**\n- Services like Profound, Brandwatch, and others are developing LLM monitoring features\n- Some SEO platforms are adding \"AI search\" tracking\n\n**Track Patterns**\n- Note which \u2026"
+    },
+    {
+      "query": "What GEO platforms help businesses optimize their presence in AI search results?",
+      "mentioned": true,
+      "context": "\u2026 ChatGPT, Perplexity, Google AI Overviews, and Bing Copilot.\n\n## Dedicated GEO/AI Search Tools\n\n- **Profound** - Tracks brand mentions and visibility across AI platforms\n- **Otterly.AI** - Monitors how brands appear in AI-generated responses\n- **Scrunch AI**\u2026"
+    },
+    {
+      "query": "Which analytics tools can show me how often my brand is mentioned by AI assistants?",
+      "mentioned": true,
+      "context": "\u2026:\n\n## Tools with AI-specific features\n\n- **Brandwatch** - Has added some AI visibility tracking\n- **Profound** - Specifically designed for \"AI search optimization\" monitoring\n- **Otterly.AI** - Tracks brand visibility in AI-generated answers\n- **Scrunch AI**\u2026"
+    },
+    {
+      "query": "What software solutions exist for measuring and improving AI share of voice for my brand?",
+      "mentioned": true,
+      "context": "\u2026e landscape is still developing. Here's what exists:\n\n## Dedicated AI SOV/Visibility Platforms\n\n- **Profound** - Tracks brand mentions across ChatGPT, Claude, Perplexity, etc.\n- **Brandwatch AI Visibility** - Recently added AI search monitoring\n- **Otterly.a\u2026"
+    },
+    {
+      "query": "How do I track whether ChatGPT, Claude, or Gemini are recommending my products to users?",
+      "mentioned": true,
+      "context": "\u2026ematic Monitoring Tools**\n- **Brandwatch** or **Mention** - can track some AI-generated content\n- **Profound** (profound.ai) - specifically built for AI search monitoring\n- **Scrunch AI**, **Otterly.AI** - emerging tools for this purpose\n\n## What You Can Tra\u2026"
+    }
+  ]
+}
