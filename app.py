@@ -3,7 +3,7 @@ import anthropic
 import json
 import re
 import pandas as pd
-import datetime
+from datetime import datetime
 
 # Secure API key from Streamlit Secrets
 @st.cache_resource
@@ -122,13 +122,13 @@ if st.button("🚀 Run Audit", type="primary") and brand.strip():
         
         # Download
         data = {
-            "brand": brand,
-            "industry": industry,
-            "queries": n_queries,
-            "timestamp": datetime.now().isoformat(),
-            "results": results,
-            "visibility_pct": pct
-        }
+    "brand": brand,
+    "industry": industry,
+    "queries": n_queries,
+    "timestamp": datetime.now().isoformat(),  # now works
+    "results": results,
+    "visibility_pct": pct
+}
         st.download_button(
             "💾 Download JSON Report",
             json.dumps(data, indent=2),
