@@ -23,11 +23,19 @@ st.markdown("**Tests if brands appear in Claude's natural responses to generic i
 st.sidebar.header("💡 Try these examples")
 st.sidebar.markdown("""
 **Profound** – `LLM visibility / GEO`  
-**Adobe LLM Optimizer** – `LLM visibility / GEO`  
+**Adobe LLM Optimizer** – `LLM visibility / GEO` 
+**Bandlight** – `LLM visibility / GEO` 
 **Zara** – `fast fashion retail`  
 **Alo** – `yoga activewear`  
+**Lululemon** – `athletic apparel`  
+**Aritzia** – `women's fashion`  
 **Audi** – `luxury automotive`  
 **Mohegan Sun** – `casino resort`
+**FanDuel** – `sports betting`  
+**DraftKings** – `sports betting`
+**Allbirds** – `sustainable footwear`  
+**Glossier** – `clean beauty`  
+**Starbucks** – `coffee cafes`  
 """)
 
 # Inputs with guidance
@@ -36,11 +44,14 @@ brand = col1.text_input(
     "Brand name", 
     placeholder="MGM Sun, Profound, Zara, etc."
 )
+
 industry = col1.text_input(
     "Industry", 
-    value="casino",
-    help="Short phrase describing the space (e.g. 'yoga activewear', 'casino resort', 'luxury automotive'). Guides what kind of questions Claude generates."
+    value="casino"
 )
+
+st.caption("Describe the space in plain English so Claude knows what kind of questions to generate (e.g., ‘LLM visibility / GEO', ‘yoga activewear', ‘casino resort', ‘fast fashion retail'). Not a SIC/NAICS code or a long keyword list.")
+
 n_queries = col2.number_input("Queries", 3, 12, 6, help="More = better accuracy")
 
 if st.button("🚀 Run Audit", type="primary") and brand.strip():
@@ -143,5 +154,3 @@ if st.button("🚀 Run Audit", type="primary") and brand.strip():
             f"audit_{brand.lower().replace(' ','_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
             "application/json"
         )
-
-st.caption("🔬 Pure methodology: generic queries → natural Claude answers → unbiased brand detection")
