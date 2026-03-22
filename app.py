@@ -57,7 +57,7 @@ brand = col1.text_input(
 
 industry = col1.text_input(
     "Industry", 
-    value="casino"
+    value="luxury automotive"
 )
 
 st.caption("Describe the space in plain English so Claude knows what kind of questions to generate (e.g., ‘LLM visibility / GEO', ‘yoga activewear', ‘casino resort', ‘fast fashion retail'). Not a SIC/NAICS code or a long keyword list.")
