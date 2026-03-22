@@ -1,7 +1,6 @@
 import streamlit as st
 import anthropic
 import json
-import re
 import pandas as pd
 from datetime import datetime
 
@@ -18,23 +17,30 @@ def get_client():
 client = get_client()
 
 st.title("🤖 AI Visibility Auditor")
-st.markdown("**Tests brand visibility in Claude's natural responses to generic industry queries**")
+st.markdown("**Tests if brands appear in Claude's natural responses to generic industry queries**")
 
-# Your benchmark results (sidebar)
-st.sidebar.header("Your GEO Benchmark")
+# NEW SIDEBAR: Examples
+st.sidebar.header("💡 Try these examples")
 st.sidebar.markdown("""
-| Brand                | Visibility |
-|----------------------|------------|
-| **Profound**         | **100%** (6/6) ⭐ |
-| Adobe LLM Optimizer  | **0%** (0/6)    |
-| Brandlight           | **0%** (0/6)    |
+**Profound** – `LLM visibility / GEO`  
+**Adobe LLM Optimizer** – `LLM visibility / GEO`  
+**Zara** – `fast fashion retail`  
+**Alo** – `yoga activewear`  
+**Audi** – `luxury automotive`  
+**Mohegan Sun** – `casino resort`
 """)
-st.sidebar.markdown("[GitHub](https://github.com/yourusername/ai-visibility-auditor)")
 
-# Inputs (clean layout)
-col1, col2 = st.columns([2,1])
-brand = col1.text_input("Brand name", placeholder="MGM Sun, Profound, etc.")
-industry = col1.text_input("Industry", value="casino", placeholder="casino, GEO, analytics")
+# Inputs with guidance
+col1, col2 = st.columns([3,1])
+brand = col1.text_input(
+    "Brand name", 
+    placeholder="MGM Sun, Profound, Zara, etc."
+)
+industry = col1.text_input(
+    "Industry", 
+    value="casino",
+    help="Short phrase describing the space (e.g. 'yoga activewear', 'casino resort', 'luxury automotive'). Guides what kind of questions Claude generates."
+)
 n_queries = col2.number_input("Queries", 3, 12, 6, help="More = better accuracy")
 
 if st.button("🚀 Run Audit", type="primary") and brand.strip():
@@ -46,10 +52,11 @@ if st.button("🚀 Run Audit", type="primary") and brand.strip():
         
         Examples for "casino":
         - "best casinos in Las Vegas?"
-        - "top casino loyalty programs?"
+        - "top casino loyalty programs?"  
         - "casino tournaments worth attending?"
         
-        Return ONLY valid JSON array of strings. Generic questions only—no brand names.
+        Return ONLY valid JSON array of strings. 
+        Generic questions only—no specific brands.
         """
         
         queries_raw = client.messages.create(
@@ -63,18 +70,19 @@ if st.button("🚀 Run Audit", type="primary") and brand.strip():
             start = queries_raw.find('[')
             end = queries_raw.rfind(']') + 1
             queries = json.loads(queries_raw[start:end])
+            st.success(f"✅ Generated {len(queries)} generic queries")
         except:
             st.error("Failed to parse queries. Try again.")
             st.stop()
         
-        st.info(f"✅ Generated {len(queries)} generic queries")
-        
-        # STEP 2: Audit each query naturally
+        # STEP 2: Audit each query naturally  
         results = []
-        progress = st.progress(0)
+        progress_bar = st.progress(0)
+        status_text = st.empty()
         
         for i, query in enumerate(queries):
-            # Ask Claude naturally (no brand priming)
+            status_text.text(f"Query {i+1}/{len(queries)}: {query[:60]}...")
+            
             resp = client.messages.create(
                 model="claude-opus-4-6",
                 max_tokens=400,
@@ -83,12 +91,12 @@ if st.button("🚀 Run Audit", type="primary") and brand.strip():
             
             answer = resp.content[0].text.lower()
             
-            # Check for brand mentions (case-insensitive, multiple variants)
+            # Check for brand mentions (case-insensitive, variants)
             brand_lower = brand.lower()
             variants = [brand_lower, brand_lower.replace(" ", ""), brand_lower.replace("-", "")]
             mentioned = any(variant in answer for variant in variants)
             
-            # Context snippet (if mentioned)
+            # Context if mentioned
             context = ""
             if mentioned:
                 idx = answer.find(brand_lower)
@@ -102,38 +110,38 @@ if st.button("🚀 Run Audit", type="primary") and brand.strip():
                 "answer_preview": answer[:120] + "..." if not mentioned else context
             })
             
-            progress.progress((i+1) / len(queries))
+            progress_bar.progress((i+1) / len(queries))
         
         # STEP 3: Results
         hits = sum(1 for r in results if r["mentioned"])
         pct = round((hits / len(results)) * 100)
         
-        st.success(f"**{brand}: {pct}% visibility ({hits}/{len(results)})**")
-        st.metric("Mentions", f"{hits}/{len(results)}", f"{pct}%")
+        st.balloons()
+        st.metric(label="Visibility", value=f"{pct}%", delta=f"{hits}/{len(results)}")
         
         # Results table
-        df = pd.DataFrame(results)
         st.subheader("Query Results")
+        df = pd.DataFrame(results)
         for idx, row in df.iterrows():
             icon = "✅" if row["mentioned"] else "❌"
             with st.expander(f"{icon} {row['query'][:70]}..."):
-                st.markdown(f"**Answer:** {row['answer_preview']}")
-                st.caption(f"Brand mentioned: {'Yes' if row['mentioned'] else 'No'}")
+                st.markdown(f"**Mentioned:** {'Yes' if row['mentioned'] else 'No'}")
+                st.markdown(f"**Answer preview:** {row['answer_preview']}")
         
-        # Download
+        # Download JSON
         data = {
-    "brand": brand,
-    "industry": industry,
-    "queries": n_queries,
-    "timestamp": datetime.now().isoformat(),  # now works
-    "results": results,
-    "visibility_pct": pct
-}
+            "brand": brand,
+            "industry": industry,
+            "queries": n_queries,
+            "timestamp": datetime.now().isoformat(),
+            "results": results,
+            "visibility_pct": pct
+        }
         st.download_button(
-            "💾 Download JSON Report",
+            "💾 Download JSON Report", 
             json.dumps(data, indent=2),
-            f"audit_{brand.lower().replace(' ','_')}_{datetime.now().strftime('%Y%m%d')}.json",
+            f"audit_{brand.lower().replace(' ','_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
             "application/json"
         )
 
-st.caption("Pure methodology: generic queries → natural Claude answers → brand mention detection")
+st.caption("🔬 Pure methodology: generic queries → natural Claude answers → unbiased brand detection")
