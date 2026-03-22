@@ -19,25 +19,35 @@ client = get_client()
 st.title("🤖 AI Visibility Auditor")
 st.markdown("**Tests if brands appear in Claude's natural responses to generic industry queries**")
 
-# NEW SIDEBAR: Examples
+# NEW SIDEBAR: Examples  
 st.sidebar.header("💡 Try these examples")
 st.sidebar.markdown("""
 **Profound** – `LLM visibility / GEO`  
-**Adobe LLM Optimizer** – `LLM visibility / GEO` 
-**Bandlight** – `LLM visibility / GEO` 
+ 
+**Adobe LLM Optimizer** – `LLM visibility / GEO`  
+ 
 **Zara** – `fast fashion retail`  
+ 
 **Alo** – `yoga activewear`  
+ 
 **Lululemon** – `athletic apparel`  
+ 
 **Aritzia** – `women's fashion`  
+ 
 **Audi** – `luxury automotive`  
-**Mohegan Sun** – `casino resort`
-**FanDuel** – `sports betting`  
-**DraftKings** – `sports betting`
+ 
+**Mohegan Sun** – `casino resort`  
+ 
 **Allbirds** – `sustainable footwear`  
+ 
 **Glossier** – `clean beauty`  
+ 
 **Starbucks** – `coffee cafes`  
+ 
+**FanDuel** – `sports betting`  
+ 
+**DraftKings** – `sports betting`
 """)
-
 # Inputs with guidance
 col1, col2 = st.columns([3,1])
 brand = col1.text_input(
