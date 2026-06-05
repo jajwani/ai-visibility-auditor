@@ -238,15 +238,27 @@ with st.sidebar:
     st.code("ANTHROPIC_API_KEY\nPERPLEXITY_API_KEY", language="bash")
     st.markdown("**Good demo brands**")
     st.markdown(
-        "- Profound — LLM visibility / GEO\n"
-        "- Adobe LLM Optimizer — LLM visibility / GEO\n"
-        "- Alo — yoga activewear\n"
-        "- FanDuel — sports betting"
+    "- Alo — yoga activewear\n"
+    "- FanDuel — sports betting\n"
+    "- Olipop — better-for-you soda\n"
+    "- Zara — fast fashion\n"
+    "- Lululemon — athletic apparel\n"
+    "- Aritzia — women's fashion\n"
+    "- Armedangels — sustainable fashion\n"
+    "- Drykorn — contemporary fashion\n"
+    "- Jack Wolfskin — outdoor apparel\n"
+    "- Sephora — beauty retail\n"
+    "- Nike — athletic apparel\n"
+    "- BMW — luxury automotive\n"
+    "- Audi — luxury automotive\n"
+    "- Nespresso — coffee pods / espresso systems"
+    "- Profound — LLM visibility / GEO\n"
+    "- Adobe LLM Optimizer — LLM visibility / GEO\n"
     )
 
 col1, col2, col3 = st.columns([2, 2, 1])
 brand = col1.text_input("Brand name", placeholder="Profound, Zara, Alo, Adobe LLM Optimizer")
-industry = col2.text_input("Industry / category", value="LLM visibility / GEO")
+industry = col2.text_input("What space is this brand in?", value="LLM visibility / GEO")
 engine_mode = col3.selectbox("Engine", ["Both", "Claude", "Perplexity"])
 
 st.caption("Use a plain-English category so the prompts stay neutral and realistic.")
