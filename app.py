@@ -251,9 +251,9 @@ with st.sidebar:
     "- Nike — athletic apparel\n"
     "- BMW — luxury automotive\n"
     "- Audi — luxury automotive\n"
-    "- Nespresso — coffee pods / espresso systems"
+    "- Nespresso — espresso systems\n"
     "- Profound — LLM visibility / GEO\n"
-    "- Adobe LLM Optimizer — LLM visibility / GEO\n"
+    "- Adobe LLM Optimizer — LLM visibility / GEO"
     )
 
 col1, col2, col3 = st.columns([2, 2, 1])
