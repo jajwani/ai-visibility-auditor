@@ -9,7 +9,7 @@ import streamlit as st
 
 st.set_page_config(page_title="AI Visibility Auditor", page_icon="🔎", layout="wide")
 
-CLAUDE_MODEL = "claude-opus-4-1"
+CLAUDE_MODEL = "claude-opus-4-5"
 PERPLEXITY_MODEL = "sonar-pro"
 
 
